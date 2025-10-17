@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Edit Monthly Goal</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            color: #333;
+        }
+        .form-container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: blue;
+        }
+        .month-display {
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            color: #333;
+            font-size: 14px;
+        }
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+        }
+        button {
+            background-color: blue;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            flex: 1;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .cancel-btn {
+            background-color: #6c757d;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            cursor: pointer;
+            font-size: 14px;
+            flex: 1;
+        }
+        .cancel-btn:hover {
+            background-color: #5a6268;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="text-align: center;">Edit Monthly Goal</h1>
+    
+    <div class="form-container">
+        <form th:action="@{/goals/update/{id}(id=${goal.id})}" 
+              th:object="${goal}" 
+              method="post">
+            
+            <div class="form-group">
+                <label for="month">Month</label>
+                <div class="month-display" th:text="${#temporals.format(goal.month, 'MMMM yyyy')}"></div>
+                <input type="hidden" 
+                       id="month"
+                       th:field="*{month}"/>
+            </div>
+            
+            <div class="form-group">
+                <label for="overallBudget">Overall Budget</label>
+                <input type="number" 
+                       id="overallBudget"
+                       step="0.01" 
+                       th:field="*{overallBudget}" 
+                       placeholder="Enter overall budget"
+                       required/>
+            </div>
+            
+            <div class="form-group">
+                <label for="savingsGoal">Savings Goal</label>
+                <input type="number" 
+                       id="savingsGoal"
+                       step="0.01" 
+                       th:field="*{savingsGoal}" 
+                       placeholder="Enter savings goal"
+                       required/>
+            </div>
+            
+            <div class="form-group">
+                <label for="incomeTarget">Income Target</label>
+                <input type="number" 
+                       id="incomeTarget"
+                       step="0.01" 
+                       th:field="*{incomeTarget}" 
+                       placeholder="Enter income target"
+                       required/>
+            </div>
+            
+            <div class="button-group">
+                <button type="submit">Update Goal</button>
+                <a th:href="@{/goals}" class="cancel-btn">Cancel</a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

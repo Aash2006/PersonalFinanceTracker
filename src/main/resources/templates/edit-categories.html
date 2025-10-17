@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Edit Category</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            color: #333;
+        }
+        .form-container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: blue;
+        }
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+        }
+        button {
+            background-color: blue;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            flex: 1;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .cancel-btn {
+            background-color: #6c757d;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            cursor: pointer;
+            font-size: 14px;
+            flex: 1;
+        }
+        .cancel-btn:hover {
+            background-color: #5a6268;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="text-align: center;">Edit Category</h1>
+    
+    <div class="form-container">
+        <form th:action="@{/categories/update/{id}(id=${category.id})}" 
+              th:object="${category}" 
+              method="post">
+            
+            <div class="form-group">
+                <label for="name">Category Name</label>
+                <input type="text" 
+                       id="name"
+                       th:field="*{name}" 
+                       placeholder="Enter category name"
+                       required/>
+            </div>
+            
+            <div class="form-group">
+                <label for="typeOfCategory">Type of Category</label>
+                <select id="typeOfCategory" 
+                        th:field="*{typeOfCategory}" 
+                        required>
+                    <option value="" disabled>Select a Type of Category</option>
+                    <option th:each="cat : ${typeOfCategory}" 
+                            th:value="${cat}" 
+                            th:text="${cat}">
+                    </option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="budgetLimit">Budget Limit</label>
+                <input type="number" 
+                       id="budgetLimit"
+                       step="0.01" 
+                       th:field="*{budgetLimit}" 
+                       placeholder="Enter budget limit (optional)"/>
+            </div>
+            
+            <div class="button-group">
+                <button type="submit">Update Category</button>
+                <a th:href="@{/categories}" class="cancel-btn">Cancel</a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

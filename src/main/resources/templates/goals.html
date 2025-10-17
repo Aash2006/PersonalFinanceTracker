@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Monthly Goals</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            color: #333;
+        }
+        h2 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        section {
+            margin-bottom: 30px;
+        }
+        form {
+            margin-bottom: 20px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        label {
+            display: inline-block;
+            margin-top: 10px;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+        input, select {
+            padding: 8px;
+            margin: 5px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            width: 100%;
+            max-width: 300px;
+            display: block;
+        }
+        button {
+            background-color: blue;
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            margin-top: 15px;
+            cursor: pointer;
+        }
+        button:hover {
+            opacity: 0.9;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            background: white;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background: blue;
+            color: white;
+            font-weight: bold;
+        }
+        .delete-column {
+            background-color: #f4f4f4;
+            border-collapse: collapse;
+            border: 1px solid #f4f4f4;
+        }
+        td.actions-cell {
+            border: none;
+            background: transparent;
+        }
+        hr {
+            border: none;
+            border-top: 2px solid #ddd;
+            margin: 30px 0;
+        }
+        p {
+            margin: 5px 0;
+            font-size: 16px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>Monthly Goals</h1>
+
+    <section>
+        <h2>Set Current Month's Goals</h2>
+        <form th:action="@{/goals}" th:object="${newGoal}" method="post">
+            <label>Month:</label>
+            <p th:text="${#temporals.format(newGoal.month, 'MMMM yyyy')}"></p>
+
+            <input type="hidden" name="month" th:value="${newGoal.month}" />
+
+            <label>Overall Budget:</label>
+            <input type="number" step="0.01" th:field="*{overallBudget}" required />
+
+            <label>Savings Goal:</label>
+            <input type="number" step="0.01" th:field="*{savingsGoal}" required />
+
+            <label>Income Target:</label>
+            <input type="number" step="0.01" th:field="*{incomeTarget}" required />
+
+            <button type="submit">Save Goals</button>
+        </form>
+    </section>
+
+    <hr/>
+
+    <section>
+        <h2>Previous Months</h2>
+        <table>
+            <tr>
+                <th>Month</th>
+                <th>Budget</th>
+                <th>Savings</th>
+                <th>Income Target</th>
+            </tr>
+            <tr th:each="goal : ${allGoals}">
+                <td th:text="${#temporals.format(goal.month, 'MMMM yyyy')}"></td>
+                <td th:text="${goal.overallBudget}"></td>
+                <td th:text="${goal.savingsGoal}"></td>
+                <td th:text="${goal.incomeTarget}"></td>
+            </tr>
+        </table>
+    </section>
+
+</body>
+</html>
