@@ -39,5 +39,17 @@ public class HomeService {
         return expensesMap;
     }
 
+    public Map<LocalDate, Double> getLastNMonthsIncome(int numberOfPriorMonthsToBeDisplayed) {
+        Map<LocalDate, Double> incomeMap = new HashMap<>();
+        LocalDate currentMonth = LocalDate.now();
+        for (int i = 0; i < numberOfPriorMonthsToBeDisplayed; i++) {
+            LocalDate month = currentMonth.minusMonths(i);
+            double income = findMoneyRelatedToCategoryOfMonth(month, CategoryType.INCOME);
+            incomeMap.put(month, income);
+        }
+
+        return incomeMap;
+    }
+
     
 }

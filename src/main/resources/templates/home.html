@@ -92,92 +92,80 @@
         </div>
     </main>
 
-    <div class="chart-container">
-        <h2>Last 6 Months Expenses</h2>
-        <canvas id="expensesChart"></canvas>
-    </div>
+<div class="chart-container">
+    <h2>Last 6 Months Finance Overview</h2>
+    <canvas id="financeChart"></canvas>
+</div>
 
-    <footer>
-        &copy; 2025 Finance Tracker App
-    </footer>
 
-    <!-- Chart.js Library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
-    
-    <!-- Chart Script -->
-    <script th:inline="javascript">
-        /*<![CDATA[*/
-        // Get the expenses data from Spring Boot
-        var expensesMap = /*[[${expensesMap}]]*/ {};
-        
-        // Convert the map to arrays for Chart.js
-        var dates = [];
-        var expenses = [];
-        
-        // Sort entries by date (oldest to newest)
-        var sortedEntries = Object.entries(expensesMap).sort(function(a, b) {
-            return new Date(a[0]) - new Date(b[0]);
-        });
-        
-        // Extract dates and expenses
-        sortedEntries.forEach(function(entry) {
-            var date = new Date(entry[0]);
-            var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+
+<script th:inline="javascript">
+document.addEventListener("DOMContentLoaded", function() {
+    const prepareChartData = (dataMap) => {
+        const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
                             "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-            dates.push(monthNames[date.getMonth()] + " " + date.getFullYear());
-            expenses.push(entry[1]);
+        const sortedEntries = Object.entries(dataMap).sort((a, b) => new Date(a[0]) - new Date(b[0]));
+        const labels = [], values = [];
+        sortedEntries.forEach(([d, v]) => {
+            const date = new Date(d);
+            labels.push(monthNames[date.getMonth()] + " " + date.getFullYear());
+            values.push(v);
         });
-        
-        // Create the chart
-        var ctx = document.getElementById('expensesChart').getContext('2d');
-        var expensesChart = new Chart(ctx, {
+        return { labels, values };
+    };
+
+    // Get data for both expenses and income
+    const expensesMap = /*[[${expensesMap}]]*/ {};
+    const incomeMap = /*[[${incomeMap}]]*/ {};
+    
+    const { labels: expLabels, values: expValues } = prepareChartData(expensesMap);
+    const { labels: incLabels, values: incValues } = prepareChartData(incomeMap);
+    
+    // Use the labels from whichever dataset has data (or merge if both have data)
+    const labels = expLabels.length > 0 ? expLabels : incLabels;
+    
+    // Create combined chart
+    const ctx = document.getElementById('financeChart');
+    if (ctx) {
+        new Chart(ctx, {
             type: 'line',
             data: {
-                labels: dates,
-                datasets: [{
-                    label: 'Monthly Expenses',
-                    data: expenses,
-                    backgroundColor: 'rgba(231, 76, 60, 0.2)',
-                    borderColor: 'rgba(231, 76, 60, 1)',
-                    borderWidth: 2,
-                    tension: 0.4,
-                    fill: true,
-                    pointRadius: 5,
-                    pointBackgroundColor: 'rgba(231, 76, 60, 1)',
-                    pointBorderColor: '#fff',
-                    pointBorderWidth: 2,
-                    pointHoverRadius: 7
-                }]
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Expenses',
+                        data: expValues,
+                        borderColor: 'rgb(239, 68, 68)',
+                        backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                        tension: 0.3
+                    },
+                    {
+                        label: 'Income',
+                        data: incValues,
+                        borderColor: 'rgb(34, 197, 94)',
+                        backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                        tension: 0.3
+                    }
+                ]
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: true,
                 plugins: {
                     legend: {
-                        display: true,
                         position: 'top',
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                return 'Expenses: £' + context.parsed.y.toFixed(2);
-                            }
-                        }
                     }
                 },
                 scales: {
                     y: {
-                        beginAtZero: true,
-                        ticks: {
-                            callback: function(value) {
-                                return '£' + value.toFixed(2);
-                            }
-                        }
+                        beginAtZero: true
                     }
                 }
             }
         });
-        /*]]>*/
-    </script>
+    }
+});
+</script>
+
 </body>
 </html>
