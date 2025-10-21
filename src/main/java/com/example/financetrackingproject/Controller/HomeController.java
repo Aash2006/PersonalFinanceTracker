@@ -30,7 +30,7 @@ public class HomeController {
         //Gets the expenses in teh last 6 months.
         model.addAttribute("expensesMap", homeService.getLastNMonthsExpenses(6));
         model.addAttribute("incomeMap", homeService.getLastNMonthsIncome(6));
-
+        model.addAttribute("budgetMap", homeService.getLastNBudgetMap(6));
 
         return "home"; 
     }

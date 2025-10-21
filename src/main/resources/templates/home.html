@@ -118,12 +118,15 @@ document.addEventListener("DOMContentLoaded", function() {
     // Get data for both expenses and income
     const expensesMap = /*[[${expensesMap}]]*/ {};
     const incomeMap = /*[[${incomeMap}]]*/ {};
-    
+    const budgetMap =     /*[[${budgetMap}]]*/ {};
     const { labels: expLabels, values: expValues } = prepareChartData(expensesMap);
     const { labels: incLabels, values: incValues } = prepareChartData(incomeMap);
+    const { labels: budLabels, values: budValues } = prepareChartData(budgetMap);
+
     
-    // Use the labels from whichever dataset has data (or merge if both have data)
-    const labels = expLabels.length > 0 ? expLabels : incLabels;
+    // Use the labels from whichever dataset has data (or merge if all 3 have data)
+    const labels = expLabels.length ? expLabels : incLabels.length ? incLabels : budLabels;
+
     
     // Create combined chart
     const ctx = document.getElementById('financeChart');
@@ -146,7 +149,15 @@ document.addEventListener("DOMContentLoaded", function() {
                         borderColor: 'rgb(34, 197, 94)',
                         backgroundColor: 'rgba(34, 197, 94, 0.1)',
                         tension: 0.3
+                    },
+                    {
+                        label: 'Budget',
+                        data: budValues,
+                        borderColor: 'rgb(59, 130, 246)',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        tension: 0.3
                     }
+                    
                 ]
             },
             options: {

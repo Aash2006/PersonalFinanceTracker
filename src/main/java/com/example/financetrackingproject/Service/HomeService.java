@@ -8,12 +8,15 @@ import org.springframework.stereotype.Service;
 
 import com.example.financetrackingproject.Model.CategoryType;
 import com.example.financetrackingproject.Repository.TransactionRepository;
+import com.example.financetrackingproject.Repository.MonthlyGoalsRepository;
 
 //Service class to handle logic fo the Home controller class (display statistics)
 @Service
 public class HomeService {
     @Autowired
     private TransactionRepository transactionRepository;
+    @Autowired
+    private MonthlyGoalsRepository monthlyGoalsRepository;
 
 
 
@@ -25,6 +28,19 @@ public class HomeService {
         Double total = transactionRepository.getTotalByCategoryTypeAndMonth(categoryType, monthValue, yearValue);
         return total != null ? total : 0.0;
     }
+
+    //Finds budget related to a specific month
+    public double findBudgetForMonth(LocalDate date) {
+        int monthValue = date.getMonthValue();
+        int yearValue = date.getYear();
+
+        Double total = monthlyGoalsRepository.getOverallBudgetByMonth(monthValue, yearValue);
+
+        return total != null ? total : 0.0;
+    }
+
+
+
 
     //Gets expenses from teh last N months
     public Map<LocalDate, Double> getLastNMonthsExpenses(int numberOfPriorMonthsToBeDisplayed) {
@@ -50,6 +66,20 @@ public class HomeService {
 
         return incomeMap;
     }
+
+    public Map<LocalDate, Double> getLastNBudgetMap(int numberOfPriorMonthsToBeDisplayed){
+        Map<LocalDate, Double> budgetMap = new HashMap<>();
+        LocalDate currentDate = LocalDate.now();
+        for (int i = 0; i < numberOfPriorMonthsToBeDisplayed; i++){
+            LocalDate month = currentDate.minusMonths(i);
+            double budget = findBudgetForMonth(month);
+            budgetMap.put(month, budget);
+        }
+
+
+        return budgetMap;
+    }
+
 
     
 }
