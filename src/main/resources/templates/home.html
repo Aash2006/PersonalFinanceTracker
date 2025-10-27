@@ -93,6 +93,8 @@
     </main>
 
 <div class="chart-container">
+    <h2>This Month Finance Overview</h2>
+    <canvas id="categoryPieChart" width="400" height="400"></canvas>
     <h2>Last 6 Months Finance Overview</h2>
     <canvas id="financeChart"></canvas>
 </div>
@@ -170,6 +172,49 @@ document.addEventListener("DOMContentLoaded", function() {
                 scales: {
                     y: {
                         beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+
+
+const categoryMap = /*[[${categoryMap}]]*/ {};
+    
+    const categoryLabels = Object.keys(categoryMap);
+    const categoryValues = Object.values(categoryMap);
+
+    const pieCtx = document.getElementById('categoryPieChart');
+    if (pieCtx && categoryLabels.length) {
+        new Chart(pieCtx, {
+            type: 'pie',
+            data: {
+                labels: categoryLabels,
+                datasets: [{
+                    data: categoryValues,
+                    backgroundColor: categoryLabels.map(() => {
+                        // generate random pastel color
+                        const r = Math.floor(Math.random() * 156 + 100);
+                        const g = Math.floor(Math.random() * 156 + 100);
+                        const b = Math.floor(Math.random() * 156 + 100);
+                        return `rgba(${r}, ${g}, ${b}, 0.7)`;
+                    }),
+                    borderColor: '#ffffff',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'right'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.label + ': ' + context.raw.toFixed(2);
+                            }
+                        }
                     }
                 }
             }

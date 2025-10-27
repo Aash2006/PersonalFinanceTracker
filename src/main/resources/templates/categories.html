@@ -123,9 +123,10 @@
         <tr th:each="c : ${categories}">
             <td th:text="${c.name}"></td>
             <td>
-                <span th:class="${c.typeOfCategory == 'INCOME' ? 'badge badge-income' : 'badge badge-expense'}"
-                      th:text="${c.typeOfCategory}">
+                <span th:class="${c.typeOfCategory.name() == 'INCOME' ? 'badge badge-income' : 'badge badge-expense'}"
+                    th:text="${c.typeOfCategory}">
                 </span>
+
             </td>
             <td th:text="${c.budgetLimit != null ? '£' + c.budgetLimit : 'No Limit'}"></td>
             <td class="delete-column">

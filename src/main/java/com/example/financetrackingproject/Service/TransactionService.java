@@ -2,7 +2,6 @@ package com.example.financetrackingproject.Service;
 
 import com.example.financetrackingproject.Model.Transaction;
 import com.example.financetrackingproject.Repository.TransactionRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
@@ -15,26 +14,31 @@ import java.util.List;
 @Service
 public class TransactionService {
 
-    @Autowired
-    private TransactionRepository repository;
+    
+    private final TransactionRepository transactionRepository;
+
+
+    public TransactionService(TransactionRepository transactionRepository){
+        this.transactionRepository = transactionRepository;
+    }
 
     public List<Transaction> findAll() {
-        return repository.findAll();
+        return transactionRepository.findAll();
     }
 
     public Transaction save(Transaction t) {
-        return repository.save(t);
+        return transactionRepository.save(t);
     }
 
     public void deleteById(Long id) {
-        repository.deleteById(id);
+        transactionRepository.deleteById(id);
     }
     public Transaction findById(Long id) {
-    return repository.findById(id)
+    return transactionRepository.findById(id)
         .orElseThrow(() -> new IllegalArgumentException("Transaction not found with id: " + id));
     }
     public Transaction update(Long id, Transaction updatedTransaction) {
-    Transaction existingTransaction = repository.findById(id)
+    Transaction existingTransaction = transactionRepository.findById(id)
         .orElseThrow(() -> new IllegalArgumentException("Transaction not found with id: " + id));
     
     existingTransaction.setAmount(updatedTransaction.getAmount());
@@ -43,7 +47,7 @@ public class TransactionService {
     existingTransaction.setTransactionDate(updatedTransaction.getTransactionDate());
     existingTransaction.setReceiptURL(updatedTransaction.getReceiptURL());
     
-    return repository.save(existingTransaction);}
+    return transactionRepository.save(existingTransaction);}
     
     
 }

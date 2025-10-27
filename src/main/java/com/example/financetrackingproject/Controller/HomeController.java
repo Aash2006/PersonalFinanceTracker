@@ -1,5 +1,7 @@
 package com.example.financetrackingproject.Controller;
 
+import java.time.LocalDate;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -31,7 +33,8 @@ public class HomeController {
         model.addAttribute("expensesMap", homeService.getLastNMonthsExpenses(6));
         model.addAttribute("incomeMap", homeService.getLastNMonthsIncome(6));
         model.addAttribute("budgetMap", homeService.getLastNBudgetMap(6));
-
+        LocalDate currentDate = LocalDate.now();
+        model.addAttribute("categoryMap", homeService.getCategoryAndSpendingForCategoryForMonth(currentDate));
         return "home"; 
     }
 }

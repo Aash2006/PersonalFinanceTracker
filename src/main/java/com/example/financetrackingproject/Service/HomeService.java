@@ -2,21 +2,31 @@ package com.example.financetrackingproject.Service;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.financetrackingproject.Model.CategoryType;
+import com.example.financetrackingproject.Model.Category;
+
 import com.example.financetrackingproject.Repository.TransactionRepository;
 import com.example.financetrackingproject.Repository.MonthlyGoalsRepository;
+
 
 //Service class to handle logic fo the Home controller class (display statistics)
 @Service
 public class HomeService {
-    @Autowired
-    private TransactionRepository transactionRepository;
-    @Autowired
-    private MonthlyGoalsRepository monthlyGoalsRepository;
+    private final TransactionRepository transactionRepository;
+    private final MonthlyGoalsRepository monthlyGoalsRepository;
+    private final CategoryService categoryService;
+
+    public HomeService(TransactionRepository transactionRepository,
+                        MonthlyGoalsRepository monthlyGoalsRepository,
+                        CategoryService categoryService) {
+        this.transactionRepository = transactionRepository;
+        this.monthlyGoalsRepository = monthlyGoalsRepository;
+        this.categoryService = categoryService;
+    }
 
 
 
@@ -38,6 +48,14 @@ public class HomeService {
 
         return total != null ? total : 0.0;
     }
+
+    public double getTotalSpendingOfCategoryByMonth(Long categoryID, LocalDate date) {
+        int month = date.getMonthValue();
+        int year = date.getYear();
+
+        Double total = transactionRepository.getTotalSpendingOfCategoryByMonth(categoryID, month, year);
+        return total != null ? total : 0.0;
+}
 
 
 
@@ -78,6 +96,19 @@ public class HomeService {
 
 
         return budgetMap;
+    }
+
+    public Map<String, Double> getCategoryAndSpendingForCategoryForMonth(LocalDate month){
+        Map<String, Double> categoryAndSpendingMap = new HashMap<>();
+        List<Category> categories = categoryService.findAll();
+        
+        for (Category category : categories) {
+        double totalSpending = getTotalSpendingOfCategoryByMonth(category.getId(), month);
+            categoryAndSpendingMap.put(category.getName(), totalSpending);
+        }
+
+        return categoryAndSpendingMap;
+
     }
 
 

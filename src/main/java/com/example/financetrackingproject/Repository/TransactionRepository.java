@@ -17,4 +17,15 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
             @Param("month") int month,
             @Param("year") int year
     );
+
+
+    @Query("SELECT SUM(t.amount) FROM Transaction t " +
+            "WHERE t.category.id = :categoryID " + 
+            "AND YEAR(t.transactionDate) = :year " + 
+            "AND MONTH(t.transactionDate) = :month")
+    Double getTotalSpendingOfCategoryByMonth(
+        @Param("categoryID") Long categoryID,
+        @Param("month") int month,
+        @Param("year") int year
+    );
 }
